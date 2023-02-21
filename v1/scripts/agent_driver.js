@@ -1,4 +1,4 @@
-const version = "1.0.0.1";
+const version = "1.0.0.2";
 const port = 7498;
 const host = "localhost";
 const reqString = "/explodingaua/browser_gateway.class?data=";
@@ -48,6 +48,28 @@ function asyncPingAgent(promise) {
         }
         if (status == 3) {
             promise(PING_CON_TIMEOUT);
+            return;
+        }
+    });
+}
+
+function asyncInterruptAgent(promise) {
+    doAgentRequest("INTERRUPT", (response) => {
+        if (response != "OK") {
+            promise(AGNT_INTERRUPT_UNKNWN);
+        }
+        promise(NO_ERROR);
+    }, (status) => {
+        if (status == 1) {
+            promise(UPD_CHECK_CON_ERROR);
+            return;
+        }
+        if (status == 2) {
+            promise(UPD_CHECK_CON_ABORT);
+            return;
+        }
+        if (status == 3) {
+            promise(UPD_CHECK_CON_TIMEOUT);
             return;
         }
     });

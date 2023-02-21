@@ -1,6 +1,7 @@
 var jsDisplay;
 var chkUpds;
 var instUpds;
+var interruptAgnt;
 
 var lastPackagesList;
 
@@ -98,7 +99,7 @@ function onPingEnd(status) {
     if (status != NO_ERROR) {
         if (status == PING_CON_ERROR || status == PING_CON_TIMEOUT) {
             jsDisplay.innerHTML = "It seems like the ExplodingAU client is not launched. If you don't have it, please download it <a href=''>here</a>.<br>" +
-            "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
+                "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else {
             dispError(status);
         }
@@ -106,6 +107,7 @@ function onPingEnd(status) {
         jsDisplay.innerHTML = "Welcome to ExplodingAU Update Website !<br>";
         jsDisplay.innerHTML += "<button id='chkUpds'>Check for updates now</button>";
         chkUpds = document.getElementById("chkUpds");
+        interruptAgnt.disabled = false;
         chkUpds.onclick = () => {
             jsDisplay.innerHTML = "Checking for updates...";
             asyncCheckForUpdates(onCheckUpdate);
@@ -113,8 +115,24 @@ function onPingEnd(status) {
     }
 }
 
+function receiveInterruptAgent(status) {
+    if (status != NO_ERROR) {
+        dispError(status);
+    } else {
+        jsDisplay.innerHTML = "The agent has been shut down!";
+        interruptAgnt.disabled = true;
+    }
+}
+
+function interruptAgent() {
+    asyncInterruptAgent(receiveInterruptAgent);
+    jsDisplay.innerHTML = "Shutting down the agent...";
+}
+
 window.onload = () => {
+    interruptAgnt = document.getElementById("interruptAgent");
     jsDisplay = document.getElementById("jsDisp");
-    jsDisplay.innerHTML = "Checking that ExplodingAU component is installed...";
+    jsDisplay.innerHTML = "Checking that ExplodingAU component is launched...";
+    interruptAgnt.onclick = interruptAgent;
     asyncPingAgent(onPingEnd);
 };
