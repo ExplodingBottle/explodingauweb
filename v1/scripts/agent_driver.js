@@ -16,7 +16,7 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const version = "1.0.0.5";
+const version = "1.0.0.6";
 const port = 7498;
 const host = "localhost";
 const reqString = "/explodingaua/browser_gateway.class?data=";
