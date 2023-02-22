@@ -101,7 +101,7 @@ function retreiveUpdates(status, packages) {
             }
             bmsg += " onchange='chkBoxUpd();' id='pckg" + package.id + "'>";
             bmsg += package.displayName + " - Current version: " + package.currentVersion + "<br>";
-            bmsg += "Latest version: " + package.currentVersion + "<br>";
+            bmsg += "Latest version: " + package.latestVersion + "<br>";
             bmsg += "Found at: <b>" + package.path + "</b><br>";
             bmsg += "</div><br>";
         });
