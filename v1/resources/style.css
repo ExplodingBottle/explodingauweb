@@ -1,0 +1,62 @@
+/*
+ *   ExplodingAU Website - The website for ExplodingAU
+ *   Copyright (C) 2023  ExplodingBottle
+ *
+ *   This program is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+.upd-element {
+    border: dashed gray;
+    width: 99%;
+    background-image: linear-gradient(gray, white);
+}
+
+.content {
+    position: fixed;
+    bottom: 0px;
+    top: 15%;
+    left: 20%;
+    right: 0%;
+}
+
+.sidebar {
+    position: fixed;
+    background-color: gray;
+    border-color: black;
+    bottom: 0px;
+    text-align: left;
+    display: block;
+    background-image: linear-gradient(black, gray);
+    color: white;
+    width: 20%;
+    top: 15%;
+    left: 0%;
+}
+
+.header {
+    position: fixed;
+    height: 15%;
+    width: 100%;
+    left: 0%;
+    top: 0%;
+    background-color: gray;
+    color: white;
+    text-align: center;
+}
+
+.upd-list {
+    overflow-y: scroll;
+    width: 90%;
+    height: calc(100% - 200px);
+}

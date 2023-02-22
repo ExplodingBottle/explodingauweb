@@ -93,19 +93,19 @@ function retreiveUpdates(status, packages) {
         lastPackagesList = packages;
         var bmsg = "Here is the list of programs and updates: <br><br>";
         bmsg += "<button onclick='checkAll();'>Check all</button>";
-        bmsg += "<button onclick='clearAll();'>Clear all</button><br><br>";
+        bmsg += "<button onclick='clearAll();'>Clear all</button><br><br><div class='upd-list'>";
         packages.forEach((package) => {
-            bmsg += "<span><input type='checkbox'";
+            bmsg += "<div class='upd-element'><input type='checkbox'";
             if (!package.updateRequired) {
                 bmsg += " disabled";
             }
             bmsg += " onchange='chkBoxUpd();' id='pckg" + package.id + "'>";
             bmsg += package.displayName + " - Current version: " + package.currentVersion + "<br>";
             bmsg += "Latest version: " + package.currentVersion + "<br>";
-            bmsg += "Found at: " + package.path + "<br>";
-            bmsg += "</span><br>";
+            bmsg += "Found at: <b>" + package.path + "</b><br>";
+            bmsg += "</div><br>";
         });
-        bmsg += "<br><br>";
+        bmsg += "</div><br><br>";
         bmsg += "<button id='install' disabled>Install updates</button>";
         jsDisplay.innerHTML = bmsg;
         instUpds = document.getElementById("install");
@@ -139,19 +139,24 @@ function onCheckUpdate(status) {
     }
 }
 
+function initiateAgentDl() {
+    doAgentDownload(true);
+}
+
 function onPingEnd(status) {
     if (status != NO_ERROR) {
         if (status == PING_CON_ERROR || status == PING_CON_TIMEOUT) {
-            jsDisplay.innerHTML = "It seems like the ExplodingAU client is not launched. If you don't have it, please download it <a href='agent_dl.html'>here</a>.<br>" +
-                "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
+            jsDisplay.innerHTML = "It seems like the ExplodingAU client is not launched. If you don't have it, please download it.<br><button onclick='initiateAgentDl();'>Download the agent</button><br>" +
+                "<br>Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else if (status == PING_VERSION_MISMATCH) {
-            jsDisplay.innerHTML = "It seems like the ExplodingAU client is outdated. Please download the latest verson at <a href='agent_dl.html'>here</a>.<br>" +
-                "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
+            interruptAgnt.disabled = false;
+            jsDisplay.innerHTML = "It seems like the ExplodingAU client is outdated. Please download the latest verson.<br><button onclick='initiateAgentDl();'>Download the agent</button><br>" +
+                "<br>Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else {
             dispError(status);
         }
     } else {
-        jsDisplay.innerHTML = "Welcome to ExplodingAU Update Website !<br>";
+        jsDisplay.innerHTML = "Welcome to ExplodingAU Update Website !<br><br>";
         jsDisplay.innerHTML += "<button id='chkUpds'>Check for updates now</button>";
         chkUpds = document.getElementById("chkUpds");
         interruptAgnt.disabled = false;
@@ -177,10 +182,12 @@ function interruptAgent() {
     jsDisplay.innerHTML = "Shutting down the agent...";
 }
 
-window.onload = () => {
+function startWebsite() {
     interruptAgnt = document.getElementById("interruptAgent");
     jsDisplay = document.getElementById("jsDisp");
     jsDisplay.innerHTML = "Checking that ExplodingAU component is launched...";
     interruptAgnt.onclick = interruptAgent;
     asyncPingAgent(onPingEnd);
-};
+}
+
+window.onload = startWebsite;
