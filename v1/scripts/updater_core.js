@@ -23,19 +23,23 @@ var interruptAgnt;
 
 var lastPackagesList;
 
-var toUpd = [];
-
 function dispError(id) {
     jsDisplay.innerHTML = "An error occured. Error code: " + id;
 }
 
-function chkBoxUpd(id) {
-    var found = toUpd.indexOf(id);
-    if (found == -1) {
-        toUpd.push(id);
-    } else {
-        toUpd.splice(found, 1);
-    }
+function computeList() {
+    var list = [];
+    lastPackagesList.forEach(pkg => {
+        var elem = document.getElementById("pckg" + pkg.id);
+        if (elem.checked) {
+            list.push(pkg.id);
+        }
+    });
+    return list;
+}
+
+function chkBoxUpd() {
+    var toUpd = computeList();
     if (toUpd.length > 0) {
         instUpds.disabled = false;
     } else {
@@ -64,29 +68,51 @@ function installUpdates(status) {
     }
 }
 
+function checkAll() {
+    lastPackagesList.forEach(pkg => {
+        var elem = document.getElementById("pckg" + pkg.id);
+        if (!elem.disabled) {
+            elem.checked = true;
+        }
+    });
+    chkBoxUpd();
+}
+
+function clearAll() {
+    lastPackagesList.forEach(pkg => {
+        var elem = document.getElementById("pckg" + pkg.id);
+        elem.checked = false;
+    });
+    chkBoxUpd();
+}
+
 function retreiveUpdates(status, packages) {
     if (status != NO_ERROR) {
         dispError(status);
     } else {
         lastPackagesList = packages;
         var bmsg = "Here is the list of programs and updates: <br><br>";
+        bmsg += "<button onclick='checkAll();'>Check all</button>";
+        bmsg += "<button onclick='clearAll();'>Clear all</button><br><br>";
         packages.forEach((package) => {
-            bmsg += "<input type='checkbox'";
+            bmsg += "<span><input type='checkbox'";
             if (!package.updateRequired) {
                 bmsg += " disabled";
             }
-            bmsg += " onchange='chkBoxUpd(" + package.id + ");'>";
+            bmsg += " onchange='chkBoxUpd();' id='pckg" + package.id + "'>";
             bmsg += package.displayName + " - Current version: " + package.currentVersion + "<br>";
             bmsg += "Latest version: " + package.currentVersion + "<br>";
             bmsg += "Found at: " + package.path + "<br>";
-            bmsg += "<br>";
+            bmsg += "</span><br>";
         });
         bmsg += "<br><br>";
         bmsg += "<button id='install' disabled>Install updates</button>";
         jsDisplay.innerHTML = bmsg;
         instUpds = document.getElementById("install");
         instUpds.onclick = () => {
-            jsDisplay.innerHTML = "Downloading and installing the selected updates...";
+            var toUpd = computeList();
+            jsDisplay.innerHTML = "Downloading and installing the selected updates...<br><br>";
+            jsDisplay.innerHTML += "<progress></progress>";
             asyncInstallUpdates(installUpdates, toUpd)
         };
     }
@@ -120,7 +146,7 @@ function onPingEnd(status) {
                 "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else if (status == PING_VERSION_MISMATCH) {
             jsDisplay.innerHTML = "It seems like the ExplodingAU client is outdated. Please download the latest verson at <a href='agent_dl.html'>here</a>.<br>" +
-            "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
+                "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else {
             dispError(status);
         }
@@ -130,7 +156,8 @@ function onPingEnd(status) {
         chkUpds = document.getElementById("chkUpds");
         interruptAgnt.disabled = false;
         chkUpds.onclick = () => {
-            jsDisplay.innerHTML = "Checking for updates...";
+            jsDisplay.innerHTML = "Checking for updates...<br><br>";
+            jsDisplay.innerHTML += "<progress></progress>";
             asyncCheckForUpdates(onCheckUpdate);
         };
     }

@@ -43,7 +43,8 @@ window.onload = () => {
     console.log("Retreiving path to agent...");
     const dlDiv = document.getElementById("dlDiv");
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', endpoint + agentDl, true);
+    var url = endpoint + agentDl
+    xhr.open('GET', url + (/\?/.test(url) ? "&" : "?") + new Date().getTime(), true);
     xhr.onload = () => {
         var link = xhr.responseText;
         console.log("Retreived link: " + link);
