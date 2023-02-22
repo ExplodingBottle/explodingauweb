@@ -118,6 +118,9 @@ function onPingEnd(status) {
         if (status == PING_CON_ERROR || status == PING_CON_TIMEOUT) {
             jsDisplay.innerHTML = "It seems like the ExplodingAU client is not launched. If you don't have it, please download it <a href='agent_dl.html'>here</a>.<br>" +
                 "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
+        } else if (status == PING_VERSION_MISMATCH) {
+            jsDisplay.innerHTML = "It seems like the ExplodingAU client is outdated. Please download the latest verson at <a href='agent_dl.html'>here</a>.<br>" +
+            "Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else {
             dispError(status);
         }
