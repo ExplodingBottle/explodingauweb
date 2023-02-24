@@ -81,11 +81,19 @@ function retreiveUpdates(status, packages) {
             if (!package.updateRequired) {
                 bmsg += " disabled";
             }
+            var desc = package.description;
+            if (desc == "null") {
+                desc = "Unknown description."
+            }
             bmsg += " onchange='chkBoxUpd();' id='pckg" + package.id + "'>";
             bmsg += package.displayName + " - Current version: " + package.currentVersion + "<br>";
             bmsg += "Latest version: " + package.latestVersion + "<br>";
-            bmsg += "Found at: <b>" + package.path + "</b><br>";
-            bmsg += "</div><br>";
+            if (package.path != "null") {
+                bmsg += "Found at: <b>" + package.path + "</b><br>";
+            }
+            bmsg += "<br><i>"
+            bmsg += desc
+            bmsg += "</i></div><br>";
         });
         bmsg += "</div><br><br>";
         bmsg += "<button id='install' disabled>Install updates</button>";

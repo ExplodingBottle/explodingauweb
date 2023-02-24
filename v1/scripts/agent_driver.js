@@ -1,4 +1,4 @@
-const version = "1.0.0.6";
+const version = "1.0.0.7";
 const port = 7498;
 const host = "localhost";
 const reqString = "/explodingaua/browser_gateway.class?data=";
@@ -139,7 +139,7 @@ function asyncReceiveUpdates(promise) {
         var packagesArray = [];
         sortedPerLines.forEach(val => {
             var splited2 = val.split(",");
-            if (splited2.length != 6) {
+            if (splited2.length != 7) {
                 return;
             }
             var pkgId = splited2[0];
@@ -148,7 +148,8 @@ function asyncReceiveUpdates(promise) {
             var displayName = splited2[3];
             var latestVersion = splited2[4];
             var needsUpdate = splited2[5];
-            var up = new UpdatePackage(pkgId, progPath, discoveredVersion, displayName, latestVersion, needsUpdate == "true");
+            var description = splited2[6];
+            var up = new UpdatePackage(pkgId, progPath, discoveredVersion, displayName, latestVersion, needsUpdate == "true", description);
             packagesArray.push(up);
         })
         promise(NO_ERROR, packagesArray);
