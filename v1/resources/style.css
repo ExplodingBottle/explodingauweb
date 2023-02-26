@@ -13,6 +13,7 @@
 }
 
 .sidebar {
+    text-align: center;
     position: fixed;
     background-color: gray;
     border-color: black;
@@ -24,6 +25,18 @@
     width: 20%;
     top: 15%;
     left: 0%;
+}
+
+.install-success {
+    color: green;
+    border: solid 1px;
+    border-color: green;
+}
+
+.install-fail {
+    color: red;
+    border: solid 1px;
+    border-color: red;
 }
 
 .header {

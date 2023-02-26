@@ -7,6 +7,7 @@
     <title>ExplodingAU V1</title>
     <script type="text/javascript" src="scripts/error_codes.js"></script>
     <script type="text/javascript" src="scripts/update_package.js"></script>
+    <script type="text/javascript" src="scripts/install_result.js"></script>
     <script type="text/javascript" src="scripts/agent_driver.js"></script>
     <script type="text/javascript" src="scripts/updater_core.js"></script>
     <script type="text/javascript" src="scripts/agent_update.js"></script>
@@ -21,9 +22,16 @@
         <a href="https://github.com/ExplodingBottle">ExplodingBottle's GitHub profile</a>
     </div>
     <div class="sidebar">
-        <i>ExplodingAU</i><br><br>This page allows you to update every projects made by ExplodingBottle.<br><br>
-        <button id="interruptAgent" disabled>Shutdown agent</button><br>
+        <i>ExplodingAU</i><br><br>This page allows you to update every projects made by ExplodingBottle.<br><br><br>
+        
+        <button id="viewWelcome" disabled>Home</button>
+        <br><br>
+        <button id="interruptAgent" disabled>Shutdown agent</button>
+        <br><br>
         <button onclick="doAgentDownload(false);">Download agent</button>
+        <br><br>
+        <button id="showHistory" disabled>View update history</button>
+
     </div>
     <iframe id='dlIFrame' style='display: none;visibility: hidden;' src=''></iframe>
     <div id="jsDisp" class="content">System is initialising... Please ensure that JavaScript is enabled.</div><br><br>

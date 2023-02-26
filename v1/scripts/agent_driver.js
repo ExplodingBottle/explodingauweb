@@ -1,4 +1,4 @@
-const version = "1.0.0.7";
+const version = "1.0.1.0";
 const port = 7498;
 const host = "localhost";
 const reqString = "/explodingaua/browser_gateway.class?data=";
@@ -23,6 +23,10 @@ function doAgentRequest(message, promise, failure) {
 
 function asyncPingAgent(promise) {
     doAgentRequest("PING", (response) => {
+        if (response == "CON_TEST_FAIL") {
+            promise(PING_AGENT_CON_TEST_FAILED);
+            return;
+        }
         var splited = response.split("|");
         if (splited.length != 2) {
             promise(PING_MALFORMED_SIZE);
@@ -142,13 +146,13 @@ function asyncReceiveUpdates(promise) {
             if (splited2.length != 7) {
                 return;
             }
-            var pkgId = splited2[0];
-            var progPath = splited2[1];
-            var discoveredVersion = splited2[2];
-            var displayName = splited2[3];
-            var latestVersion = splited2[4];
-            var needsUpdate = splited2[5];
-            var description = splited2[6];
+            var pkgId = splited2[0].replace("&~coma';", ",");
+            var progPath = splited2[1].replace("&~coma';", ",");
+            var discoveredVersion = splited2[2].replace("&~coma';", ",");
+            var displayName = splited2[3].replace("&~coma';", ",");
+            var latestVersion = splited2[4].replace("&~coma';", ",");
+            var needsUpdate = splited2[5].replace("&~coma';", ",");
+            var description = splited2[6].replace("&~coma';", ",");
             var up = new UpdatePackage(pkgId, progPath, discoveredVersion, displayName, latestVersion, needsUpdate == "true", description);
             packagesArray.push(up);
         })
@@ -202,8 +206,28 @@ function asyncFetchInstallResults(promise) {
         if (response == "INSTALLING") {
             promise(RETRY_NON_FATAL, null);
             return;
+        } else {
+            var sortedPerLines = response.split("\r\n");
+            var resultsArray = [];
+            sortedPerLines.forEach(val => {
+                var splited2 = val.split(",");
+                if (splited2.length != 8) {
+                    return;
+                }
+                var progPath = splited2[0].replace("&~coma';", ",");
+                var discoveredVersion = splited2[1].replace("&~coma';", ",");
+                var displayName = splited2[2].replace("&~coma';", ",");
+                var latestVersion = splited2[3].replace("&~coma';", ",");
+                var needsUpdate = splited2[4].replace("&~coma';", ",");
+                var description = splited2[5].replace("&~coma';", ",");
+                var status = splited2[6];
+                var date = splited2[7];
+                var up = new UpdatePackage(null, progPath, discoveredVersion, displayName, latestVersion, needsUpdate == "true", description); // null package id, it is useless
+                var res = new InstallResult(up, status == "SUCCESS", Number(date));
+                resultsArray.push(res);
+            })
+            promise(NO_ERROR, resultsArray);
         }
-        promise(NO_ERROR);
     }, (status) => {
         if (status == 1) {
             promise(UPD_INSTALL_RES_CON_ERROR, null);
@@ -215,6 +239,49 @@ function asyncFetchInstallResults(promise) {
         }
         if (status == 3) {
             promise(UPD_INSTALL_RES_CON_TIMEOUT, null);
+            return;
+        }
+    });
+}
+
+function asyncFetchUpdatesHistory(promise) {
+    doAgentRequest("UPDATES_HISTORY", (response) => {
+        if (response == "HISTORY_FAIL") {
+            promise(UPD_HISTORY_LOAD_FAIL, null);
+            return;
+        } else {
+            var sortedPerLines = response.split("\r\n");
+            var resultsArray = [];
+            sortedPerLines.forEach(val => {
+                var splited2 = val.split(",");
+                if (splited2.length != 8) {
+                    return;
+                }
+                var progPath = splited2[0].replace("&~coma';", ",");
+                var discoveredVersion = splited2[1].replace("&~coma';", ",");
+                var displayName = splited2[2].replace("&~coma';", ",");
+                var latestVersion = splited2[3].replace("&~coma';", ",");
+                var needsUpdate = splited2[4].replace("&~coma';", ",");
+                var description = splited2[5].replace("&~coma';", ",");
+                var status = splited2[6];
+                var date = splited2[7];
+                var up = new UpdatePackage(null, progPath, discoveredVersion, displayName, latestVersion, needsUpdate == "true", description); // null package id, it is useless
+                var res = new InstallResult(up, status == "SUCCESS", Number(date));
+                resultsArray.push(res);
+            })
+            promise(NO_ERROR, resultsArray);
+        }
+    }, (status) => {
+        if (status == 1) {
+            promise(UPD_HISTORY_CON_ERROR, null);
+            return;
+        }
+        if (status == 2) {
+            promise(UPD_HISTORY_CON_ABORT, null);
+            return;
+        }
+        if (status == 3) {
+            promise(UPD_HISTORY_CON_TIMEOUT, null);
             return;
         }
     });
