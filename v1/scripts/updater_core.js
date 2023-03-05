@@ -247,6 +247,7 @@ function onPingEnd(status) {
                 "<br>Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else if (status == PING_VERSION_MISMATCH) {
             setAgentDependantButtonsEnablement(false);
+            interruptAgnt.disabled = false;
             jsDisplay.innerHTML = "It seems like the ExplodingAU client is outdated. Please download the latest verson.<br><button onclick='initiateAgentDl();'>Download the agent</button><br>" +
                 "<br>Also, please check that no anti-advertisers are enabled, this may disrupt the service. <br>Error code: " + status;
         } else {
